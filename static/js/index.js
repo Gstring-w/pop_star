@@ -5,6 +5,68 @@ var star_wrapper = document.getElementsByClassName("star_wrapper")[0];
 var select_score = document.getElementsByClassName("select_score")[0];
 var timer = null;
 var score = 0;
+var moveHash = {
+  bottom: -375 / squareNum,
+  left: -375 / squareNum
+};
+
+function removeSquare() {
+  if (select.length == 1) {
+    return;
+  }
+
+  for (var i = 0; i < select.length; i++) {
+    allSquare[select[i].col][select[i].row] = null;
+    star_wrapper.removeChild(select[i]);
+  }
+}
+
+function dropSquare() {
+  for (var i = 0; i < squareNum; i++) {
+    var pointer = 0;
+    for (var j = 0; j < squareNum; j++) {
+      if (allSquare[j][i] != null) {
+        if (j != pointer) {
+          allSquare[pointer][i] = allSquare[j][i];
+          allSquare[j][i].row = pointer;
+          allSquare[j][i] = null;
+        }
+        pointer++;
+      }
+    }
+  }
+  for (var i = 0; i < allSquare[0].length; ) {
+    if (allSquare[0][i] == null) {
+      for (var j = 0; j < squareNum; j++) {
+        allSquare[j].splice(i, 1);
+      }
+      continue;
+    }
+    i++;
+  }
+}
+
+function isOver() {
+  var temp = [];
+  for (var i = 0; i < allSquare; i++) {
+    for (var j = 0; j < allSquare[0].length; j++) {
+      check(allSquare[i][j], temp);
+      console.log(temp);
+      if (temp.length > 1) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+function clickSquare(dom) {
+  removeSquare();
+  dropSquare();
+  refresh();
+  if (isOver()) {
+    alert("游戏结束！");
+  }
+}
 
 function check(dom, select) {
   if (dom == null) {
@@ -87,6 +149,9 @@ function selectSquare(dom) {
 }
 
 function square(num, col, row) {
+  if (num == null) {
+    return;
+  }
   var dom = document.createElement("div");
   dom.style.display = "inline-block";
   dom.style.position = "absolute";
@@ -105,6 +170,24 @@ function square(num, col, row) {
   dom.row = row;
   return dom;
 }
+function refresh() {
+  for (var i = 0; i < allSquare.length; i++) {
+    for (var j = 0; j < allSquare[i].length; j++) {
+      if (allSquare[i][j] == null) {
+        continue;
+      }
+      allSquare[i][j].col = i;
+      allSquare[i][j].row = j;
+      allSquare[i][j].style.transition = "left 0.3s, bottom 0.3s";
+      allSquare[i][j].style.left = allSquare[i][j].row * (375 / 10) + "px";
+      allSquare[i][j].style.bottom = allSquare[i][j].col * (375 / 10) + "px";
+      allSquare[i][j].style.backgroundImage =
+        "url('./static/img/" + allSquare[i][j].num + ".png')";
+      allSquare[i][j].style.backgroundSize = "cover";
+      allSquare[i][j].style.transform = "scale(0.95)";
+    }
+  }
+}
 function initSquare() {
   //初始化一个二维数组
   for (var i = 0; i < squareNum; i++) {
@@ -116,8 +199,12 @@ function initSquare() {
       allSquare[i][j].onmouseover = function() {
         selectSquare(this);
       };
-
+      allSquare[i][j].onclick = function() {
+        clickSquare(this);
+      };
       star_wrapper.append(allSquare[i][j]);
+
+      refresh(allSquare);
     }
   }
 }
