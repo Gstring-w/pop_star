@@ -1,0 +1,25 @@
+{
+  "name": "PopStar",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "forever start index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Gstring-w/pop_star.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Gstring-w/pop_star/issues"
+  },
+  "homepage": "https://github.com/Gstring-w/pop_star#readme",
+  "devDependencies": {
+    "express": "^4.16.4",
+    "forever": "^1.0.0"
+  }
+}
